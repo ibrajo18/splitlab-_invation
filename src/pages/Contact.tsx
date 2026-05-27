@@ -33,10 +33,13 @@ export default function Contact() {
         body: JSON.stringify(data)
       });
 
-      if (response.ok) {
+      const responseData = await response.json().catch(() => ({}));
+
+      if (response.ok && responseData.success !== 'false') {
         setSubmitted(true);
       } else {
-        throw new Error('Failed to deliver your message. Please write to us directly at splitlab.ng@gmail.com.');
+        const errMsg = responseData.message || 'Failed to deliver your message. If this is splitlab.ng@gmail.com, please check your inbox for an activation email from FormSubmit.';
+        throw new Error(errMsg);
       }
     } catch (err: any) {
       setErrorOnSubmit(err.message || 'An unexpected error occurred. Please try again or email us directly.');
@@ -58,7 +61,10 @@ export default function Contact() {
           </div>
           <h2 className="text-4xl font-bold mb-4">Message Sent!</h2>
           <p className="text-gray-600 mb-8 font-medium">
-            Thank you for reaching out. A copy of your submission has been forwarded, and our leadership team will contact you shortly.
+            Thank you for reaching out. A copy of your submission has been forwarded to <strong className="text-brand-primary">splitlab.ng@gmail.com</strong>.
+            <span className="block mt-4 text-xs text-indigo-600/90 font-normal bg-indigo-50/60 p-4 rounded-xl border border-indigo-100/30 text-left leading-relaxed">
+              💡 <strong>Administrator Note:</strong> If this was your first test submission, please check the inbox of <strong>splitlab.ng@gmail.com</strong> for a FormSubmit activation email and click the confirmation link inside. Succeeding submissions will automatically arrive instantly in your inbox without any confirmation!
+            </span>
           </p>
           <button
             onClick={() => setSubmitted(false)}
@@ -102,7 +108,13 @@ export default function Contact() {
 
             <div className="section-card bg-white p-8 md:p-12 border-none shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-              <h2 className="text-3xl font-bold mb-8 text-brand-dark relative z-10">Partner Inquiry Form</h2>
+              <h2 className="text-3xl font-bold mb-2 text-brand-dark relative z-10">Partner Inquiry Form</h2>
+              <p className="text-xs text-slate-500 mb-6 leading-relaxed relative z-10">
+                Inquiries are sent directly to <span className="font-semibold text-brand-primary">splitlab.ng@gmail.com</span>.
+                <span className="block mt-1.5 text-indigo-600/90 font-semibold bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/30">
+                  💡 Note: If this is your first submission, please locate the FormSubmit activation email in splitlab.ng@gmail.com and click the confirmation link inside to authorize deliveries!
+                </span>
+              </p>
               <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 {/* Honeypot spam filter */}
                 <input type="text" name="_honey" style={{ display: 'none' }} />
